@@ -2,7 +2,10 @@ import { createClient } from "@/lib/supabase/server";
 
 export default async function Home() {
   const supabase = await createClient();
-  const { error } = await supabase.auth.getSession();
+  const { data: brands, error } = await supabase
+    .from("brands")
+    .select("name")
+    .order("name");
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
@@ -16,15 +19,15 @@ export default async function Home() {
         Premium otomobillerin adresi. Yakında.
       </p>
 
-      <div className="text-xs text-muted bg-surface px-4 py-2 rounded">
-        Supabase bağlantısı:{" "}
-        {error ? `❌ Hata: ${error.message}` : "✅ Başarılı"}
-      </div>
+      {error ? (
+        <div className="text-xs text-accent">❌ {error.message}</div>
+      ) : (
+        <div className="mt-8 text-xs text-muted tracking-widest uppercase max-w-2xl">
+          {brands?.map((b) => b.name).join(" · ")}
+        </div>
+      )}
 
       <div className="mt-12 h-px w-24 bg-border" />
-      <p className="mt-8 text-xs text-muted tracking-widest uppercase">
-        Ferrari · Lamborghini · McLaren · Rolls-Royce
-      </p>
     </main>
   );
 }
