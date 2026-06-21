@@ -27,6 +27,10 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Saydam halde beyaz, scroll'lu halde siyah
+  const textColor = scrolled ? "text-foreground" : "text-white";
+  const hoverColor = "hover:text-accent";
+
   return (
     <header
       className={cn(
@@ -38,13 +42,13 @@ export function Header() {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Desktop */}
-        <div className="hidden md:grid grid-cols-3 items-center h-20">
+        <div className={cn("hidden md:grid grid-cols-3 items-center h-20 transition-colors", textColor)}>
           <nav className="flex items-center gap-8 justify-self-start">
             {leftNav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-xs tracking-[0.2em] uppercase hover:text-accent transition-colors"
+                className={cn("text-xs tracking-[0.2em] uppercase transition-colors", hoverColor)}
               >
                 {item.label}
               </Link>
@@ -63,25 +67,17 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-xs tracking-[0.2em] uppercase hover:text-accent transition-colors"
+                  className={cn("text-xs tracking-[0.2em] uppercase transition-colors", hoverColor)}
                 >
                   {item.label}
                 </Link>
               ))}
             </nav>
             <div className="flex items-center gap-4">
-              <Link
-                href="/favorites"
-                aria-label="Favoriler"
-                className="hover:text-accent transition-colors"
-              >
+              <Link href="/favorites" aria-label="Favoriler" className={cn("transition-colors", hoverColor)}>
                 <Heart className="w-5 h-5" strokeWidth={1.5} />
               </Link>
-              <Link
-                href="/login"
-                aria-label="Hesabım"
-                className="hover:text-accent transition-colors"
-              >
+              <Link href="/login" aria-label="Hesabım" className={cn("transition-colors", hoverColor)}>
                 <User className="w-5 h-5" strokeWidth={1.5} />
               </Link>
             </div>
@@ -89,7 +85,7 @@ export function Header() {
         </div>
 
         {/* Mobile */}
-        <div className="md:hidden flex items-center justify-between h-16">
+        <div className={cn("md:hidden flex items-center justify-between h-16 transition-colors", textColor)}>
           <button
             aria-label="Menüyü aç"
             onClick={() => setMobileOpen((v) => !v)}
@@ -111,7 +107,7 @@ export function Header() {
         </div>
 
         {mobileOpen && (
-          <nav className="md:hidden border-t border-border py-6 flex flex-col gap-5 bg-background">
+          <nav className="md:hidden border-t border-border py-6 flex flex-col gap-5 bg-background text-foreground">
             {[...leftNav, ...rightNav].map((item) => (
               <Link
                 key={item.href}
