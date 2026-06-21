@@ -19,7 +19,7 @@ export default async function Home() {
     .order("created_at", { ascending: false });
 
   return (
-    <main className="min-h-screen px-6 py-16 max-w-7xl mx-auto">
+    <div className="min-h-screen px-6 pt-32 pb-16 max-w-7xl mx-auto">
       <header className="text-center mb-16">
         <p className="text-xs tracking-[0.3em] text-accent mb-4 uppercase">
           Öne Çıkan Araçlar
@@ -59,6 +59,6 @@ export default async function Home() {
           );
         })}
       </div>
-    </main>
+    </div>
   );
 }
