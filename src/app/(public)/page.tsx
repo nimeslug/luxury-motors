@@ -1,6 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { Hero } from "@/components/home/hero";
 import { CarCard } from "@/components/cars/car-card";
+import { CategoriesGrid } from "@/components/home/categories-grid";
+import { BrandsStrip } from "@/components/home/brands-strip";
+import { CallToAction } from "@/components/home/cta";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -47,6 +50,10 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      <CategoriesGrid />
+      <BrandsStrip /> 
+      <CallToAction />
     </>
   );
 }
