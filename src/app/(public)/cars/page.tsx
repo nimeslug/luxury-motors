@@ -52,18 +52,19 @@ export default async function CarsPage({
 
   // Araç sorgusu — filtreleri uygula
   let query = supabase.from("cars").select(
-    `
-      id,
-      model,
-      year,
-      price,
-      currency,
-      status,
-      brands ( name ),
-      car_images ( url, is_primary )
-    `,
-    { count: "exact" }
-  );
+  `
+    id,
+    slug,
+    model,
+    year,
+    price,
+    currency,
+    status,
+    brands ( name ),
+    car_images ( url, is_primary )
+  `,
+  { count: "exact" }
+);
 
   if (brandId) query = query.eq("brand_id", brandId);
   if (categoryId) query = query.eq("category_id", categoryId);

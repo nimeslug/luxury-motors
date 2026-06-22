@@ -9,19 +9,20 @@ export default async function Home() {
   const supabase = await createClient();
 
   const { data: cars, error } = await supabase
-    .from("cars")
-    .select(`
-      id,
-      model,
-      year,
-      price,
-      currency,
-      status,
-      brands ( name ),
-      car_images ( url, is_primary )
-    `)
-    .eq("is_featured", true)
-    .order("created_at", { ascending: false });
+  .from("cars")
+  .select(`
+    id,
+    slug,
+    model,
+    year,
+    price,
+    currency,
+    status,
+    brands ( name ),
+    car_images ( url, is_primary )
+  `)
+  .eq("is_featured", true)
+  .order("created_at", { ascending: false });
 
   return (
     <>
