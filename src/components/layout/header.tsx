@@ -1,133 +1,153 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Heart, User, Menu, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
+import { signOut } from "@/app/(auth)/actions";
+import type { User } from "@supabase/supabase-js";
 
-const leftNav = [
-  { label: "Markalar", href: "/brands" },
-  { label: "Araçlar", href: "/cars" },
-  { label: "Kategoriler", href: "/categories" },
-];
-
-const rightNav = [
-  { label: "Hakkımızda", href: "/about" },
-  { label: "İletişim", href: "/contact" },
-];
-
-export function Header() {
+export function Header({ user }: { user: User | null }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    onScroll();
+    function onScroll() {
+      setScrolled(window.scrollY > 30);
+    }
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Saydam halde beyaz, scroll'lu halde siyah
-  const textColor = scrolled ? "text-foreground" : "text-white";
-  const hoverColor = "hover:text-accent";
+  const textColor = scrolled || mobileOpen ? "text-foreground" : "text-white";
+  const bgColor =
+    scrolled || mobileOpen
+      ? "bg-background border-b border-border"
+      : "bg-transparent";
+
+  const firstName = user?.user_metadata?.full_name?.split(" ")[0];
 
   return (
     <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled
-          ? "bg-background/95 backdrop-blur-md border-b border-border"
-          : "bg-transparent"
-      )}
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${bgColor}`}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        {/* Desktop */}
-        <div className={cn("hidden md:grid grid-cols-3 items-center h-20 transition-colors", textColor)}>
-          <nav className="flex items-center gap-8 justify-self-start">
-            {leftNav.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn("text-xs tracking-[0.2em] uppercase transition-colors", hoverColor)}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-
-          <Link href="/" className="justify-self-center">
-            <span className="font-serif text-xl tracking-[0.2em] uppercase">
-              Luxury Motors
-            </span>
+      <div
+        className={`max-w-7xl mx-auto px-6 py-5 flex items-center justify-between ${textColor} transition-colors duration-500`}
+      >
+        {/* Sol nav (masaüstü) */}
+        <nav className="hidden md:flex gap-8 text-xs tracking-[0.2em] uppercase">
+          <Link href="/cars" className="hover:text-accent transition-colors">
+            Araçlar
           </Link>
-
-          <div className="flex items-center gap-8 justify-self-end">
-            <nav className="flex items-center gap-8">
-              {rightNav.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn("text-xs tracking-[0.2em] uppercase transition-colors", hoverColor)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-            <div className="flex items-center gap-4">
-              <Link href="/favorites" aria-label="Favoriler" className={cn("transition-colors", hoverColor)}>
-                <Heart className="w-5 h-5" strokeWidth={1.5} />
-              </Link>
-              <Link href="/login" aria-label="Hesabım" className={cn("transition-colors", hoverColor)}>
-                <User className="w-5 h-5" strokeWidth={1.5} />
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile */}
-        <div className={cn("md:hidden flex items-center justify-between h-16 transition-colors", textColor)}>
-          <button
-            aria-label="Menüyü aç"
-            onClick={() => setMobileOpen((v) => !v)}
+          <Link
+            href="/#categories"
+            className="hover:text-accent transition-colors"
           >
-            {mobileOpen ? (
-              <X className="w-6 h-6" strokeWidth={1.5} />
-            ) : (
-              <Menu className="w-6 h-6" strokeWidth={1.5} />
-            )}
-          </button>
-          <Link href="/">
-            <span className="font-serif text-base tracking-[0.15em] uppercase">
-              Luxury Motors
-            </span>
+            Kategoriler
           </Link>
-          <Link href="/login" aria-label="Hesabım">
-            <User className="w-5 h-5" strokeWidth={1.5} />
-          </Link>
-        </div>
+        </nav>
 
-        {mobileOpen && (
-          <nav className="md:hidden border-t border-border py-6 flex flex-col gap-5 bg-background text-foreground">
-            {[...leftNav, ...rightNav].map((item) => (
+        {/* Logo (orta) */}
+        <Link
+          href="/"
+          className="font-serif text-lg tracking-[0.2em] uppercase whitespace-nowrap"
+        >
+          Luxury Motors
+        </Link>
+
+        {/* Sağ nav (masaüstü) */}
+        <nav className="hidden md:flex gap-6 text-xs tracking-[0.2em] uppercase items-center">
+          {user ? (
+            <>
               <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileOpen(false)}
-                className="text-sm tracking-[0.2em] uppercase hover:text-accent transition-colors"
+                href="/account"
+                className="hover:text-accent transition-colors"
               >
-                {item.label}
+                {firstName || "Hesabım"}
               </Link>
-            ))}
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  className="hover:text-accent transition-colors cursor-pointer"
+                >
+                  Çıkış
+                </button>
+              </form>
+            </>
+          ) : (
             <Link
-              href="/favorites"
-              onClick={() => setMobileOpen(false)}
-              className="text-sm tracking-[0.2em] uppercase hover:text-accent transition-colors"
+              href="/login"
+              className="hover:text-accent transition-colors"
             >
-              Favoriler
+              Giriş Yap
             </Link>
-          </nav>
-        )}
+          )}
+        </nav>
+
+        {/* Mobile menu butonu */}
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="md:hidden"
+          aria-label="Menüyü Aç"
+        >
+          {mobileOpen ? (
+            <X className="w-5 h-5" strokeWidth={1.5} />
+          ) : (
+            <Menu className="w-5 h-5" strokeWidth={1.5} />
+          )}
+        </button>
       </div>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className="md:hidden bg-background border-t border-border text-foreground">
+          <nav className="px-6 py-6 flex flex-col gap-4 text-xs tracking-[0.2em] uppercase">
+            <Link
+              href="/cars"
+              onClick={() => setMobileOpen(false)}
+              className="hover:text-accent transition-colors"
+            >
+              Araçlar
+            </Link>
+            <Link
+              href="/#categories"
+              onClick={() => setMobileOpen(false)}
+              className="hover:text-accent transition-colors"
+            >
+              Kategoriler
+            </Link>
+
+            <div className="pt-4 border-t border-border">
+              {user ? (
+                <div className="space-y-4">
+                  <Link
+                    href="/account"
+                    onClick={() => setMobileOpen(false)}
+                    className="block hover:text-accent transition-colors"
+                  >
+                    {firstName || "Hesabım"}
+                  </Link>
+                  <form action={signOut}>
+                    <button
+                      type="submit"
+                      className="hover:text-accent transition-colors"
+                    >
+                      Çıkış
+                    </button>
+                  </form>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="hover:text-accent transition-colors"
+                >
+                  Giriş Yap
+                </Link>
+              )}
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }

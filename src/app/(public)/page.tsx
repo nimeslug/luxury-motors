@@ -8,21 +8,34 @@ import { CallToAction } from "@/components/home/cta";
 export default async function Home() {
   const supabase = await createClient();
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let favoritedIds = new Set<string>();
+  if (user) {
+    const { data: favs } = await supabase
+      .from("favorites")
+      .select("car_id")
+      .eq("user_id", user.id);
+    favoritedIds = new Set(favs?.map((f) => f.car_id) ?? []);
+  }
+
   const { data: cars, error } = await supabase
-  .from("cars")
-  .select(`
-    id,
-    slug,
-    model,
-    year,
-    price,
-    currency,
-    status,
-    brands ( name ),
-    car_images ( url, is_primary )
-  `)
-  .eq("is_featured", true)
-  .order("created_at", { ascending: false });
+    .from("cars")
+    .select(`
+      id,
+      slug,
+      model,
+      year,
+      price,
+      currency,
+      status,
+      brands ( name ),
+      car_images ( url, is_primary )
+    `)
+    .eq("is_featured", true)
+    .order("created_at", { ascending: false });
 
   return (
     <>
@@ -47,13 +60,17 @@ export default async function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {cars?.map((car) => (
-            <CarCard key={car.id} car={car} />
+            <CarCard
+              key={car.id}
+              car={car}
+              isFavorited={user ? favoritedIds.has(car.id) : null}
+            />
           ))}
         </div>
       </section>
 
       <CategoriesGrid />
-      <BrandsStrip /> 
+      <BrandsStrip />
       <CallToAction />
     </>
   );

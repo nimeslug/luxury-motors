@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { CarGallery } from "@/components/cars/car-gallery";
+import { CarCard } from "@/components/cars/car-card";
+import { CarContactButtons } from "@/components/cars/car-contact-buttons";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -31,6 +33,24 @@ export default async function CarDetailPage({ params }: Props) {
   const { slug } = await params;
   const supabase = await createClient();
 
+  // Kullanıcı bilgisi (contact form pre-fill için)
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let defaultName = "";
+  let defaultEmail = "";
+  if (user) {
+    defaultEmail = user.email ?? "";
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", user.id)
+      .single();
+    defaultName =
+      profile?.full_name ?? user.user_metadata?.full_name ?? "";
+  }
+
   const { data: car, error } = await supabase
     .from("cars")
     .select(`
@@ -43,6 +63,24 @@ export default async function CarDetailPage({ params }: Props) {
     .single();
 
   if (error || !car) notFound();
+
+  // İlgili araçlar — aynı marka veya kategoriden, mevcut araç hariç
+  const { data: relatedCars } = await supabase
+    .from("cars")
+    .select(`
+      id,
+      slug,
+      model,
+      year,
+      price,
+      currency,
+      status,
+      brands ( name ),
+      car_images ( url, is_primary )
+    `)
+    .or(`brand_id.eq.${car.brand_id},category_id.eq.${car.category_id}`)
+    .neq("id", car.id)
+    .limit(3);
 
   // Görselleri sırala: primary önce, sonra display_order
   const images = [...(car.car_images ?? [])].sort((a, b) => {
@@ -116,14 +154,12 @@ export default async function CarDetailPage({ params }: Props) {
           {/* Sağ: butonlar + hızlı bilgi */}
           <aside className="lg:border-l border-border lg:pl-12">
             <div className="space-y-8">
-              <div className="space-y-3">
-                <button className="w-full px-6 py-3 bg-foreground text-background hover:bg-accent transition-colors text-xs tracking-[0.3em] uppercase">
-                  İletişime Geç
-                </button>
-                <button className="w-full px-6 py-3 border border-border hover:bg-surface transition-colors text-xs tracking-[0.3em] uppercase">
-                  Test Sürüşü Talep Et
-                </button>
-              </div>
+              <CarContactButtons
+                carId={car.id}
+                carModel={car.model}
+                defaultName={defaultName}
+                defaultEmail={defaultEmail}
+              />
 
               <div className="pt-6 border-t border-border space-y-3 text-sm">
                 <div className="flex justify-between">
@@ -301,6 +337,26 @@ export default async function CarDetailPage({ params }: Props) {
           </div>
         </div>
       </section>
+
+      {/* İlgili araçlar */}
+      {relatedCars && relatedCars.length > 0 && (
+        <section className="px-6 pb-24 max-w-7xl mx-auto">
+          <div className="border-t border-border pt-16">
+            <header className="mb-12">
+              <p className="text-xs tracking-[0.3em] text-accent mb-3 uppercase">
+                Benzer Araçlar
+              </p>
+              <h2 className="font-serif text-3xl">Keşfetmeye Devam Et</h2>
+            </header>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {relatedCars.map((rc) => (
+                <CarCard key={rc.id} car={rc} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </>
   );
 }
