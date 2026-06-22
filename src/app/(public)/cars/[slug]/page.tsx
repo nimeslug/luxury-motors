@@ -161,6 +161,146 @@ export default async function CarDetailPage({ params }: Props) {
           </aside>
         </div>
       </section>
+
+      {/* Tam teknik özellikler */}
+      <section className="px-6 pb-24 max-w-7xl mx-auto">
+        <div className="border-t border-border pt-16">
+          <h2 className="font-serif text-3xl mb-12">Teknik Özellikler</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+            {/* Performans */}
+            <div>
+              <p className="text-xs tracking-[0.3em] uppercase text-accent mb-6">
+                Performans
+              </p>
+              <dl className="space-y-3 text-sm">
+                {car.engine_displacement && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted">Motor Hacmi</dt>
+                    <dd className="text-right">{car.engine_displacement} L</dd>
+                  </div>
+                )}
+                {car.horsepower && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted">Güç</dt>
+                    <dd className="text-right">{car.horsepower} HP</dd>
+                  </div>
+                )}
+                {car.torque_nm && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted">Tork</dt>
+                    <dd className="text-right">{car.torque_nm} Nm</dd>
+                  </div>
+                )}
+                {car.top_speed_kmh && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted">Maks. Hız</dt>
+                    <dd className="text-right">{car.top_speed_kmh} km/s</dd>
+                  </div>
+                )}
+                {car.acceleration_0_100 && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted">0-100 km/s</dt>
+                    <dd className="text-right">{car.acceleration_0_100} sn</dd>
+                  </div>
+                )}
+              </dl>
+            </div>
+
+            {/* Genel */}
+            <div>
+              <p className="text-xs tracking-[0.3em] uppercase text-accent mb-6">
+                Genel
+              </p>
+              <dl className="space-y-3 text-sm">
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted">Yıl</dt>
+                  <dd className="text-right">{car.year}</dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted">Kilometre</dt>
+                  <dd className="text-right">
+                    {new Intl.NumberFormat("tr-TR").format(car.mileage_km)} km
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted">Yakıt</dt>
+                  <dd className="text-right capitalize">{car.fuel_type}</dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted">Vites</dt>
+                  <dd className="text-right capitalize">
+                    {car.transmission?.replace("_", " ")}
+                  </dd>
+                </div>
+                {car.condition && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted">Durum</dt>
+                    <dd className="text-right">
+                      {car.condition === "yeni" ? "Yeni" : "İkinci El"}
+                    </dd>
+                  </div>
+                )}
+              </dl>
+            </div>
+
+            {/* Görünüm */}
+            <div>
+              <p className="text-xs tracking-[0.3em] uppercase text-accent mb-6">
+                Görünüm
+              </p>
+              <dl className="space-y-3 text-sm">
+                {car.exterior_color && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted">Dış Renk</dt>
+                    <dd className="text-right">{car.exterior_color}</dd>
+                  </div>
+                )}
+                {car.interior_color && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted">İç Renk</dt>
+                    <dd className="text-right">{car.interior_color}</dd>
+                  </div>
+                )}
+                {!car.exterior_color && !car.interior_color && (
+                  <p className="text-xs text-muted italic">
+                    Bilgi mevcut değil
+                  </p>
+                )}
+              </dl>
+            </div>
+
+            {/* Belge */}
+            <div>
+              <p className="text-xs tracking-[0.3em] uppercase text-accent mb-6">
+                Belge
+              </p>
+              <dl className="space-y-3 text-sm">
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted">Servis Geçmişi</dt>
+                  <dd className="text-right">
+                    {car.has_service_history ? "Var" : "Yok"}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted">Hasar Kaydı</dt>
+                  <dd className="text-right">
+                    {car.has_damage_record ? "Var" : "Yok"}
+                  </dd>
+                </div>
+                {car.vin && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted">VIN</dt>
+                    <dd className="text-right font-mono text-xs break-all">
+                      {car.vin}
+                    </dd>
+                  </div>
+                )}
+              </dl>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

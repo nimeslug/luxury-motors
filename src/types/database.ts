@@ -87,6 +87,7 @@ export type Database = {
       }
       cars: {
         Row: {
+          acceleration_0_100: number | null
           brand_id: string
           category_id: string
           condition: Database["public"]["Enums"]["car_condition"]
@@ -108,6 +109,8 @@ export type Database = {
           price: number
           slug: string
           status: Database["public"]["Enums"]["car_status"]
+          top_speed_kmh: number | null
+          torque_nm: number | null
           transmission: Database["public"]["Enums"]["transmission_type"]
           updated_at: string | null
           view_count: number | null
@@ -115,6 +118,7 @@ export type Database = {
           year: number
         }
         Insert: {
+          acceleration_0_100?: number | null
           brand_id: string
           category_id: string
           condition?: Database["public"]["Enums"]["car_condition"]
@@ -136,6 +140,8 @@ export type Database = {
           price: number
           slug: string
           status?: Database["public"]["Enums"]["car_status"]
+          top_speed_kmh?: number | null
+          torque_nm?: number | null
           transmission: Database["public"]["Enums"]["transmission_type"]
           updated_at?: string | null
           view_count?: number | null
@@ -143,6 +149,7 @@ export type Database = {
           year: number
         }
         Update: {
+          acceleration_0_100?: number | null
           brand_id?: string
           category_id?: string
           condition?: Database["public"]["Enums"]["car_condition"]
@@ -164,6 +171,8 @@ export type Database = {
           price?: number
           slug?: string
           status?: Database["public"]["Enums"]["car_status"]
+          top_speed_kmh?: number | null
+          torque_nm?: number | null
           transmission?: Database["public"]["Enums"]["transmission_type"]
           updated_at?: string | null
           view_count?: number | null
