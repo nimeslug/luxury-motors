@@ -55,6 +55,7 @@ export type Database = {
           display_order: number
           id: string
           is_primary: boolean | null
+          storage_path: string | null
           url: string
         }
         Insert: {
@@ -64,6 +65,7 @@ export type Database = {
           display_order?: number
           id?: string
           is_primary?: boolean | null
+          storage_path?: string | null
           url: string
         }
         Update: {
@@ -73,6 +75,7 @@ export type Database = {
           display_order?: number
           id?: string
           is_primary?: boolean | null
+          storage_path?: string | null
           url?: string
         }
         Relationships: [
