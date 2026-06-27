@@ -29,7 +29,7 @@ export async function CategoriesGrid() {
           {categories.map((category) => (
             <Link
               key={category.id}
-              href={`/categories/${category.slug}`}
+              href={`/cars?category=${category.slug}`}
               className="group relative aspect-[4/5] overflow-hidden block"
             >
               {category.image_url && (

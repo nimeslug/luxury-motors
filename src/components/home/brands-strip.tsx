@@ -31,7 +31,7 @@ export async function BrandsStrip() {
           {doubledBrands.map((brand, i) => (
             <Link
               key={`${brand.id}-${i}`}
-              href={`/brands/${brand.slug}`}
+              href={`/cars?brand=${brand.slug}`}
               className="flex-shrink-0 group whitespace-nowrap"
             >
               <span className="font-serif text-3xl md:text-4xl tracking-[0.15em] uppercase text-muted group-hover:text-foreground transition-colors duration-500">
