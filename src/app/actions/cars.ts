@@ -52,11 +52,7 @@ function parseFormData(formData: FormData) {
       | "otomatik"
       | "yari_otomatik",
     condition: formData.get("condition") as "yeni" | "ikinci_el",
-    status: formData.get("status") as
-      | "yayinda"
-      | "satildi"
-      | "taslak"
-      | "rezerve",
+    status: formData.get("status") as "musait" | "rezerve" | "satildi",
     description: str("description"),
     horsepower: num("horsepower"),
     torque_nm: num("torque_nm"),

@@ -7,10 +7,9 @@ export const metadata = {
 };
 
 const statusMap: Record<string, { label: string; color: string }> = {
-  yayinda: { label: "Yayında", color: "bg-green-600 text-white" },
+  musait: { label: "Müsait", color: "bg-green-600 text-white" },
+  rezerve: { label: "Rezerve", color: "bg-yellow-500 text-white" },
   satildi: { label: "Satıldı", color: "bg-muted text-white" },
-  taslak: { label: "Taslak", color: "bg-yellow-500 text-white" },
-  rezerve: { label: "Rezerve", color: "bg-accent text-white" },
 };
 
 export default async function AdminCarsPage() {
@@ -93,7 +92,7 @@ export default async function AdminCarsPage() {
                 const brandName = Array.isArray(car.brands)
                   ? car.brands[0]?.name
                   : (car.brands as { name: string } | null)?.name;
-                const status = statusMap[car.status] ?? statusMap.taslak;
+                const status = statusMap[car.status] ?? statusMap.musait;
 
                 return (
                   <tr
