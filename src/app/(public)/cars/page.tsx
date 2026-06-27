@@ -4,6 +4,7 @@ import { CarFilters } from "@/components/cars/car-filters";
 import { CarSort } from "@/components/cars/car-sort";
 import { CarSearch } from "@/components/cars/car-search";
 import { Pagination } from "@/components/cars/pagination";
+import { AISearch } from "@/components/cars/ai-search";
 
 export const metadata = {
   title: "Tüm Araçlar",
@@ -50,21 +51,21 @@ export default async function CarsPage({
     ? categories.find((c) => c.slug === params.category)?.id ?? null
     : null;
 
-  // Araç sorgusu — filtreleri uygula
+  // Araç sorgusu
   let query = supabase.from("cars").select(
-  `
-    id,
-    slug,
-    model,
-    year,
-    price,
-    currency,
-    status,
-    brands ( name ),
-    car_images ( url, is_primary )
-  `,
-  { count: "exact" }
-);
+    `
+      id,
+      slug,
+      model,
+      year,
+      price,
+      currency,
+      status,
+      brands ( name ),
+      car_images ( url, is_primary )
+    `,
+    { count: "exact" }
+  );
 
   if (brandId) query = query.eq("brand_id", brandId);
   if (categoryId) query = query.eq("category_id", categoryId);
@@ -123,16 +124,15 @@ export default async function CarsPage({
         </div>
       </header>
 
+      <AISearch brands={brands} categories={categories} />
+
       <section className="px-6 py-16 max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row gap-12">
           <CarFilters brands={brands} categories={categories} />
 
           <div className="flex-1">
-            {/* Üst bar: sayı + sıralama */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 pb-4 border-b border-border">
-              <p className="text-sm text-muted">
-                {count ?? 0} araç bulundu
-              </p>
+              <p className="text-sm text-muted">{count ?? 0} araç bulundu</p>
               <CarSort />
             </div>
 
@@ -143,9 +143,7 @@ export default async function CarsPage({
             {cars && cars.length === 0 ? (
               <div className="text-center py-24 text-muted">
                 <p className="font-serif text-2xl mb-2">Sonuç bulunamadı</p>
-                <p className="text-sm">
-                  Filtreleri değiştirip tekrar deneyin.
-                </p>
+                <p className="text-sm">Filtreleri değiştirip tekrar deneyin.</p>
               </div>
             ) : (
               <>
