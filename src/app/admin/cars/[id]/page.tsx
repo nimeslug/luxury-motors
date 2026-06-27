@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { CarForm } from "@/components/admin/car-form";
 import { CarImagesManager } from "@/components/admin/car-images-manager";
+import { DeleteCarButton } from "@/components/admin/delete-car-button";
 
 export const metadata = {
   title: "Araç Düzenle",
@@ -29,6 +30,8 @@ export default async function EditCarPage({ params }: Props) {
 
   if (carRes.error || !carRes.data) notFound();
 
+  const car = carRes.data;
+
   return (
     <>
       <Link
@@ -43,23 +46,25 @@ export default async function EditCarPage({ params }: Props) {
         <p className="text-xs tracking-[0.3em] text-accent mb-3 uppercase">
           Düzenleme
         </p>
-        <h1 className="font-serif text-4xl">{carRes.data.model}</h1>
+        <h1 className="font-serif text-4xl">{car.model}</h1>
       </header>
 
-      {/* Görseller bölümü */}
       <section className="mb-16">
         <h2 className="font-serif text-2xl mb-6">Görseller</h2>
         <CarImagesManager carId={id} images={imagesRes.data ?? []} />
       </section>
 
-      {/* Form bölümü */}
       <section>
         <h2 className="font-serif text-2xl mb-6">Bilgiler</h2>
         <CarForm
           brands={brandsRes.data ?? []}
           categories={categoriesRes.data ?? []}
-          car={carRes.data}
+          car={car}
         />
+      </section>
+
+      <section className="mt-16 pt-16 border-t border-border">
+        <DeleteCarButton carId={id} carModel={car.model} />
       </section>
     </>
   );
